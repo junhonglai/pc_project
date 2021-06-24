@@ -34,7 +34,10 @@ const routes = [
       isFootershow:false,
     }
   },
-
+  {
+    path:'*',
+    redirect: '/'
+  }
   // {
   //   path: '/about',
   //   name: 'About',

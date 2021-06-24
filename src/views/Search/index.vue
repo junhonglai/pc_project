@@ -1,14 +1,19 @@
 <template>
- <div>
+  <div>
     Search
- </div>
+    <TypeNav />
+  </div>
 </template>
 
 <script>
-export default {
-  name:'Search'
-}
+import TypeNav from "../../components/TypeNav";
 
+export default {
+  name: "Search",
+  components: {
+    TypeNav,
+  },
+};
 </script>
 <style>
 </style>
