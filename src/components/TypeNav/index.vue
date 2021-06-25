@@ -112,7 +112,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .outer .type-nav {
   border-bottom: 2px solid #e1251b;
 }
@@ -153,10 +153,12 @@ export default {
   font-size: 14px;
   font-weight: 400;
   overflow: hidden;
-  padding: 0 20px;
+  /* padding: 0 20px; */
   margin: 0;
 }
 .outer .type-nav .container .sort .all-sort-list2 .item h3 a {
+  display: block;
+  padding: 0 20px;
   color: #333;
 }
 .outer .type-nav .container .sort .all-sort-list2 .item .item-list {
@@ -244,5 +246,8 @@ export default {
 }
 .outer .type-nav .container .sort .all-sort-list2 .item:hover .item-list {
   display: block;
+}
+.item:hover {
+  background-color: #f3a79d;
 }
 </style>
