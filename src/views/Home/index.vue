@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <TyepNav></TyepNav>
+    <TyepNav />
     <!--列表-->
     <ListContainer />
     <!--今日推荐-->
@@ -10,9 +10,7 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
-    <!--楼层-->
-    <Floor />
+    <Floor v-for="floor in floors" :key="floor.id" :floor="floor" />
     <!--商标-->
     <Brand />
   </div>
@@ -26,6 +24,7 @@ import Like from "./Like/Like";
 import ListContainer from "./ListContainer/ListContainer";
 import Rank from "./Rank/Rank";
 import TodayRecommend from "./TodayRecommend/TodayRecommend";
+import { reqGetFloors } from "../../api/requestsMock";
 export default {
   name: "Home",
   components: {
@@ -36,6 +35,21 @@ export default {
     ListContainer,
     Rank,
     TodayRecommend,
+  },
+  data() {
+    return {
+      floors: [],
+    };
+  },
+  async mounted() {
+    await reqGetFloors()
+      .then((re) => {
+        this.floors = re;
+        console.log(this.floors);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   },
 };
 </script>
