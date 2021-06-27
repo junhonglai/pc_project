@@ -98,6 +98,7 @@ export default {
       // console.log(e.target.dataset);
       // 解构自定义属性
       const { categoryname, categoryid, level } = e.target.dataset;
+      const {keyword} = this.$route.params
       // 如果有自定义属性中的某一个属性，说明点击的就是a标签
       if (e.target.dataset.level) {
         this.$router.history.push({
@@ -107,6 +108,9 @@ export default {
             categoryName: categoryname,
             [`category${level}Id`]: categoryid,
           },
+          params:{
+            keyword,
+          }
         });
       }
     },

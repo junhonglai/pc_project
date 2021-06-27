@@ -25,7 +25,7 @@
           <img src="./logo.png" alt="logo" />
         </router-link>
         <form class="header-search" @submit.prevent="searchSubmit">
-          <input type="text" class="search-inp" />
+          <input type="text" class="search-inp" v-model="keyword" />
           <button class="search-btn">搜索</button>
         </form>
       </div>
@@ -36,11 +36,27 @@
 <script>
 export default {
   name: "Header",
-  methods:{
-    searchSubmit(){
-      this.$router.history.push('/search')
-    }
-  }
+  data() {
+    return {
+      keyword: "",
+    };
+  },
+  methods: {
+    searchSubmit() {
+      const keyword = this.keyword.trim();
+      // 问题：如果输入框内容为空，点击搜索路径错误，应该是http://localhost:8080/search，但是却是http://localhost:8080，这是由于这个时候携带的params参数为空keyword:""，而跳转至search的路由路径为/search/:keyword?，没有与之对应的路径/search/，
+      let options = {
+        name: "Search",
+        params: {
+          keyword,
+        },
+        query: this.$route.query,
+      };
+      // 判断params参数是否为空，若为空开不携带params参数
+      if (!keyword) delete options.params
+      this.$router.history.push(options);
+    },
+  },
 };
 </script>
 <style lang="less">
@@ -90,7 +106,7 @@ export default {
   }
 }
 
-.header-search{
+.header-search {
   display: flex;
 }
 //  输入框
