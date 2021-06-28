@@ -8,6 +8,8 @@ import './mock'
 
 // 引入重置样式表
 import './styles/reset.css'
+// 引入字体图标样式
+import './styles/iconfont.css'
 
 Vue.config.productionTip = false
 

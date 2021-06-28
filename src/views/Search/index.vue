@@ -11,10 +11,31 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 搜索的关键字 -->
+            <li class="with-x" v-show="$route.params.keyword">
+              {{ $route.params.keyword }}
+              <i @click="delKeyword">×</i>
+            </li>
+            <!-- 搜索栏的类目 -->
+            <li class="with-x" v-show="$route.query.categoryName">
+              {{ $route.query.categoryName }}
+              <i @click="delCategoryName">×</i>
+            </li>
+            <!-- 搜索的品牌显示 -->
+            <li class="with-x" v-show="options.trademark">
+              {{ options.trademark.split(":")[1]
+              }}<i @click="delTrademark">×</i>
+            </li>
+            <!-- 搜索的商品属性显示 -->
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="index"
+              v-show="prop"
+            >
+              {{ `${prop.split(":")[2]}:${prop.split(":")[1]}`
+              }}<i @click="delProp(index)">×</i>
+            </li>
           </ul>
         </div>
 
@@ -26,24 +47,52 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{ active: order.orderName === '1' }"
+                  @click="setOrder('1')"
+                >
+                  <a
+                    >综合
+                    <span
+                      v-show="order.orderName === '1'"
+                      :class="[
+                        'iconfont',
+                        order.orderType === 'asc'
+                          ? 'icon-direction-up'
+                          : 'icon-direction-down',
+                      ]"
+                    ></span>
+                  </a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
+                <li
+                  :class="{ active: order.orderName === '2' }"
+                  @click="setOrder('2')"
+                >
+                  <a
+                    >价格
+                    <span
+                      v-show="order.orderName === '2'"
+                      :class="[
+                        'iconfont',
+                        order.orderType === 'asc'
+                          ? 'icon-direction-up'
+                          : 'icon-direction-down',
+                      ]"
+                    ></span
+                  ></a>
                 </li>
-                <li>
-                  <a href="#">价格⬇</a>
-                </li>
+                <!-- <li>
+                  <a href="#">价格 <span class="iconfont icon-direction-up"/> </a>
+                </li> -->
               </ul>
             </div>
           </div>
@@ -140,9 +189,18 @@ export default {
       },
     };
   },
+  // 将vuex中管理的数据代理到this中
   computed: {
     ...mapState("search", ["goodsList", "total"]),
+    order() {
+      const [orderName, orderType] = this.options.order.split(":");
+      return {
+        orderType,
+        orderName,
+      };
+    },
   },
+  // 将vuex间接修改数据的方法代理到this中
   methods: {
     ...mapActions("search", ["searchGoodsList"]),
     // 自定义事件获取searchSelector子组件传递过来的数据，将自定义事件给子组件时不用携带参数，但是子组件传递过来的参数我们再父组件定义自定义事件时需要参数接收
@@ -155,13 +213,16 @@ export default {
         ...newoptions,
       };
 
+      // 搜索条件里需要的是props而不是prop，因此当prop有值时我们将其添加到props中，再把prop删除，因为搜索条件没有prop，会出问题
       if (newoptions.prop) {
         options.props.push(newoptions.prop);
         delete options.prop;
       }
+
       // 重新赋值
       this.options = options;
 
+      // 发送请求
       this.searchGoodsList({
         ...options,
         ...this.$route.params,
@@ -169,26 +230,69 @@ export default {
       });
     },
 
-    // 每页条数改变
-    handleSizeChange(pageSize){
-      this.search({
-        pageSize,
-      })
+    // 设置排序
+    setOrder(orderName) {
+      // 如果点击的是同一个按钮，则改变排序方式orderType
+      if (this.order.orderName === orderName) {
+        this.options.order = `${orderName}:${
+          this.order.orderType === "asc" ? "desc" : "asc"
+        }`;
+      } else {
+        // 默认是降序
+        this.options.order = `${orderName}:desc`;
+      }
+      this.search()
     },
-    // 改变页码
-    handleCurrentChange(pageNo){
+    // 删除搜索关键字
+    delKeyword() {
+      // console.log(111);
+      this.$router.history.push({
+        name: "Search",
+        query: this.$route.query,
+        // 因为搜索关键字是可选的params参数，因此不传params参数就能删除，因为此时params为空
+      });
+    },
+    // 删除搜索类目
+    delCategoryName() {
+      this.$router.history.push({
+        name: "Search",
+        params: this.$route.params,
+        // 因为搜索关类目是query参数，因此不传query参数就能删除，因为此时query为空
+      });
+    },
+    // 输出搜索品牌
+    delTrademark() {
+      this.options.trademark = "";
+      this.search();
+    },
+    // 删除搜索属性
+    delProp(index) {
+      // 因为搜索属性可有展示多个，要知道删除的属性是哪个就得在@click是传递当前属性的index
+      this.options.props.splice(index, 1);
+      this.search();
+    },
+    // 每页条数改变
+    handleSizeChange(pageNo,pageSize) {
+      // console.log(pageNo);
       this.search({
         pageNo,
-      })
+        pageSize,
+      });
+    },
+    // 改变页码
+    handleCurrentChange(pageNo) {
+      this.search({
+        pageNo,
+      });
     },
     // 子组件将新的currenPage传过来通知父组件更新
-    changePage(currentPage){
-      this.options.pageNo = currentPage
+    changePage(currentPage) {
+      this.options.pageNo = currentPage;
     },
     // 子组件将新的currenPage传过来通知父组件更新
-    changeSize(pageSize){
-      this.options.pageSize = pageSize
-    }
+    changeSize(pageSize) {
+      this.options.pageSize = pageSize;
+    },
   },
   mounted() {
     this.search();

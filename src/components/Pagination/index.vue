@@ -80,6 +80,7 @@ export default {
     return {
       // myCurrentPage: this.currentPage,
       // myPageSize: this.pageSize,
+      isEmited: false,
     };
   },
   computed: {
@@ -178,12 +179,26 @@ export default {
     },
   },
   watch: {
+    // 监视当前页
     myCurrentPage(currentPage) {
       // console.log(currentPage);
+      if (this.isEmited) {
+        this.isEmited = false;
+        return;
+      }
       this.$emit("current-change", currentPage);
     },
+    // 监视每页条数
     myPageSize(pageSize) {
-      this.$emit("size-change", pageSize);
+      if (this.myCurrentPage > this.pageTotal) {
+        this.myCurrentPage = this.pageTotal;
+        this.isEmited = true;
+        this.$emit("size-change", this.pageTotal, pageSize);
+        return;
+        // this.$emit("current-change", this.pageTotal);
+      }
+      console.log(this.pageTotal);
+      this.$emit("size-change", this.myCurrentPage, pageSize);
     },
   },
 };

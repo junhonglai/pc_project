@@ -47,13 +47,14 @@ export default {
       // 问题：如果输入框内容为空，点击搜索路径错误，应该是http://localhost:8080/search，但是却是http://localhost:8080，这是由于这个时候携带的params参数为空keyword:""，而跳转至search的路由路径为/search/:keyword?，没有与之对应的路径/search/，
       let options = {
         name: "Search",
-        params: {
-          keyword,
-        },
         query: this.$route.query,
       };
       // 判断params参数是否为空，若为空开不携带params参数
-      if (!keyword) delete options.params
+      if (keyword) {
+        options.params = {
+          keyword,
+        };
+      }
       this.$router.history.push(options);
     },
   },

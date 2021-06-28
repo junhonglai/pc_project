@@ -14,8 +14,12 @@ const getters = {};
 // 间接操作数据的方法
 const actions = {
   async searchGoodsList({ commit }, options) {
-    const res = await reqGoodsList(options);
-    commit("SEARCH_GOODS_LIST", res);
+    try {
+      const res = await reqGoodsList(options)
+      commit('SEARCH_GOODS_LIST', res)
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
