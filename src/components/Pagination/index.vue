@@ -191,7 +191,7 @@ export default {
     // 监视每页条数
     myPageSize(pageSize) {
       if (this.myCurrentPage > this.pageTotal) {
-        this.myCurrentPage = this.pageTotal;
+        // this.myCurrentPage = this.pageTotal;
         this.isEmited = true;
         this.$emit("size-change", this.pageTotal, pageSize);
         return;

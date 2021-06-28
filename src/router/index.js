@@ -4,6 +4,7 @@ import Home from "../views/Home";
 import Search from "../views/Search";
 import Login from "../views/Login";
 import Register from "../views/Register";
+import Detail from "../components/Detail";
 
 Vue.use(VueRouter);
 
@@ -22,22 +23,27 @@ const routes = [
     name: "Login",
     path: "/login",
     component: Login,
-    meta:{
-      isFootershow:false,
-    }
+    meta: {
+      isFootershow: false,
+    },
   },
   {
     name: "Register",
     path: "/register",
     component: Register,
-    meta:{
-      isFootershow:false,
-    }
+    meta: {
+      isFootershow: false,
+    },
   },
   {
-    path:'*',
-    redirect: '/'
-  }
+    name: "Detail",
+    path: "/detail/:id",
+    component: Detail,
+  },
+  {
+    path: "*",
+    redirect: "/",
+  },
   // {
   //   path: '/about',
   //   name: 'About',
@@ -52,6 +58,9 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+  scrollBehavior() {
+    return { x: 0, y: 0 };
+  },
 });
 
 export default router;
