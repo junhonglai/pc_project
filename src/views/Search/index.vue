@@ -44,6 +44,7 @@
 
         <!--details-->
         <div class="details clearfix">
+          <!-- 搜索条件展示 -->
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
@@ -96,9 +97,11 @@
               </ul>
             </div>
           </div>
+
+          <!-- 商品列表 -->
           <div class="goods-list">
             <ul class="yui3-g">
-              <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id">
+              <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id" @click="toDetail(good.id)">
                 <div class="list-wrap">
                   <div class="p-img">
                     <a><img :src="good.defaultImg" /></a>
@@ -293,6 +296,15 @@ export default {
     changeSize(pageSize) {
       this.options.pageSize = pageSize;
     },
+    // 点击商品跳转至商品详情
+    toDetail(id){
+      this.$router.history.push({
+        name:'Detail',
+        params:{
+          id
+        }
+      })
+    }
   },
   mounted() {
     this.search();

@@ -7,28 +7,30 @@
     <section class="con">
       <!-- 导航路径区域 -->
       <div class="conPoin">
-        <span>手机、数码、通讯</span>
-        <span>手机</span>
-        <span>Apple苹果</span>
-        <span>iphone 6S系类</span>
+        <span>{{ goods.categoryView.category1Name }}</span>
+        <span>{{ goods.categoryView.category2Name }}</span>
+        <span>{{ goods.categoryView.category3Name }}</span>
       </div>
       <!-- 主要内容区域 -->
       <div class="mainCon">
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom :img="goods.skuInfo.skuImageList[imgIndex]" />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList
+            :imgList="goods.skuInfo.skuImageList"
+            :imgIndex.sync="imgIndex"
+          />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
           <div class="goodsDetail">
             <h3 class="InfoName">
-              Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机
+              {{ goods.skuInfo.skuName }}
             </h3>
             <p class="news">
-              推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返
+              {{ goods.skuInfo.skuDesc }}
             </p>
             <div class="priceArea">
               <div class="priceArea1">
@@ -37,7 +39,7 @@
                 </div>
                 <div class="price">
                   <i>¥</i>
-                  <em>5299</em>
+                  <em>{{ goods.skuInfo.price }}</em>
                   <span>降价通知</span>
                 </div>
                 <div class="remark">
@@ -76,39 +78,25 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl>
-                <dt class="title">选择颜色</dt>
-                <dd changepirce="0" class="active">金色</dd>
-                <dd changepirce="40">银色</dd>
-                <dd changepirce="90">黑色</dd>
-              </dl>
-              <dl>
-                <dt class="title">内存容量</dt>
-                <dd changepirce="0" class="active">16G</dd>
-                <dd changepirce="300">64G</dd>
-                <dd changepirce="900">128G</dd>
-                <dd changepirce="1300">256G</dd>
-              </dl>
-              <dl>
-                <dt class="title">选择版本</dt>
-                <dd changepirce="0" class="active">公开版</dd>
-                <dd changepirce="-1000">移动版</dd>
-              </dl>
-              <dl>
-                <dt class="title">购买方式</dt>
-                <dd changepirce="0" class="active">官方标配</dd>
-                <dd changepirce="-240">优惠移动版</dd>
-                <dd changepirce="-390">电信优惠版</dd>
+              <dl
+                v-for="spuSaleAttr in goods.spuSaleAttrList"
+                :key="spuSaleAttr.id"
+              >
+                <dt class="title">{{ spuSaleAttr.saleAttrName }}</dt>
+                <dd
+                  changepirce="0"
+                  class="active"
+                  v-for="spuValue in spuSaleAttr.spuSaleAttrValueList"
+                  :key="spuValue.id"
+                >
+                  {{ spuValue.saleAttrValueName }}
+                </dd>
               </dl>
             </div>
             <div class="cartWrap">
-              <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
-              </div>
+              <InputCom v-model="count" :min="1" :max="100" />
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a @click="toAddCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -350,14 +338,50 @@
 import TypeNav from "../TypeNav";
 import ImageList from "./ImageList/ImageList";
 import Zoom from "./Zoom/Zoom";
+import InputCom from "./InputCom";
+import { reqAddCart } from "../../api/addCart";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "Detail",
-
   components: {
     ImageList,
     Zoom,
     TypeNav,
+    InputCom,
+  },
+  data() {
+    return {
+      imgIndex: 0,
+      count: 1,
+    };
+  },
+  computed: {
+    ...mapState("detail", ["goods"]),
+  },
+  methods: {
+    ...mapActions("detail", ["getGoodsDetail"]),
+    async toAddCart() {
+      try {
+        const { skuDefaultImg, skuName, price } = this.goods.skuInfo;
+        await reqAddCart(this.goods.skuInfo.id, this.count);
+        sessionStorage.setItem(
+          "goods",
+          JSON.stringify({
+            img: skuDefaultImg,
+            skuNum: this.count,
+            skuName,
+            price,
+          })
+        );
+        this.$router.history.push(`/addcartsuccess`);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  mounted() {
+    this.getGoodsDetail(this.$route.params.id);
   },
 };
 </script>
@@ -525,46 +549,6 @@ export default {
           }
 
           .cartWrap {
-            .controls {
-              width: 48px;
-              position: relative;
-              float: left;
-              margin-right: 15px;
-
-              .itxt {
-                width: 38px;
-                height: 37px;
-                border: 1px solid #ddd;
-                color: #555;
-                float: left;
-                border-right: 0;
-                text-align: center;
-              }
-
-              .plus,
-              .mins {
-                width: 15px;
-                text-align: center;
-                height: 17px;
-                line-height: 17px;
-                background: #f1f1f1;
-                color: #666;
-                position: absolute;
-                right: -8px;
-                border: 1px solid #ccc;
-              }
-
-              .mins {
-                right: -8px;
-                top: 19px;
-                border-top: 0;
-              }
-
-              .plus {
-                right: -8px;
-              }
-            }
-
             .add {
               float: left;
 

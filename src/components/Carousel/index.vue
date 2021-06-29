@@ -36,8 +36,9 @@ export default {
     banners: {
       handler(banners) {
         this.$nextTick(() => {
-          if (!banners.length) return
+          if (!banners.length) return;
           this.swiper = new Swiper(this.$refs.swiper, {
+            allowTouchMove: false,
             // 前进后退按钮
             navigation: {
               nextEl: ".swiper-button-next",

@@ -1,15 +1,19 @@
 import axios from "axios";
-import NProgress from 'nprogress'
-import '../../node_modules/nprogress/nprogress.css'
+import NProgress from "nprogress";
+import getUuid from "./getUuid";
+import "../../node_modules/nprogress/nprogress.css";
 
 const request = axios.create({
   baseURL: "/api",
+  headers: {},
   timeout: 10000,
 });
 
 request.interceptors.request.use(function(config) {
   NProgress.start();
   // 在发送请求之前做些什么
+  // 未登录用户的临时id
+  config.headers.userTempId = getUuid();
   return config;
 });
 

@@ -5,6 +5,8 @@ import Search from "../views/Search";
 import Login from "../views/Login";
 import Register from "../views/Register";
 import Detail from "../components/Detail";
+import AddCartSuccess from "../views/AddCartSuccess";
+import ShopCart from '../views/ShopCart'
 
 Vue.use(VueRouter);
 
@@ -39,6 +41,16 @@ const routes = [
     name: "Detail",
     path: "/detail/:id",
     component: Detail,
+  },
+  {
+    name: "AddCartSuccess",
+    path: "/addcartsuccess",
+    component: AddCartSuccess,
+  },
+  {
+    name: "ShopCart",
+    path: "/shopcart",
+    component: ShopCart,
   },
   {
     path: "*",
