@@ -3,7 +3,11 @@
     <div class="header">
       <div class="header-top">
         <div class="header-user">
-          <p>
+          <p v-if="nickName">
+            尚品汇欢迎您！{{ nickName }}
+            <button @click="userLogout">退出登录</button>
+          </p>
+          <p v-else>
             尚品汇欢迎您！请
             <router-link to="/login" class="header-login">登录</router-link>
             <router-link to="/register">免费注册</router-link>
@@ -34,6 +38,8 @@
 </template>
 
 <script>
+import { mapState,mapActions } from "vuex";
+
 export default {
   name: "Header",
   data() {
@@ -42,6 +48,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions('users',['logout']),
     searchSubmit() {
       const keyword = this.keyword.trim();
       // 问题：如果输入框内容为空，点击搜索路径错误，应该是http://localhost:8080/search，但是却是http://localhost:8080，这是由于这个时候携带的params参数为空keyword:""，而跳转至search的路由路径为/search/:keyword?，没有与之对应的路径/search/，
@@ -57,6 +64,16 @@ export default {
       }
       this.$router.history.push(options);
     },
+    // 退出登录
+    async userLogout(){
+      await this.logout()
+      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
+      console.log(this.nickName);
+    }
+  },
+  computed: {
+    ...mapState("users", ["nickName"]),
   },
 };
 </script>

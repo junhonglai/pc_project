@@ -2,41 +2,89 @@
   <div class="register-container">
     <ValidationObserver v-slot="{ handleSubmit }">
       <!-- 注册内容 -->
-      <form class="register" @submit.prevent="handleSubmit(onSubmit)">
+      <form class="register" @submit.prevent="handleSubmit(submit)">
         <h3>
           注册新用户
           <span class="go"
             >我有账号，去 <a href="login.html" target="_blank">登陆</a>
           </span>
         </h3>
-        <div class="content">
+        <ValidationProvider
+          class="content"
+          tag="div"
+          name="Phone"
+          rules="phoneRequired|phone"
+          :debounce="100"
+          v-slot="{ errors }"
+        >
           <label>手机号:</label>
-          <input type="text" placeholder="请输入你的手机号" />
-          <span class="error-msg">错误提示信息</span>
-        </div>
-        <div class="content">
+          <input
+            type="text"
+            placeholder="请输入你的手机号"
+            v-model="user.phone"
+          />
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="content"
+          tag="div"
+          name="Code"
+          rules="codeRequired|code"
+          :debounce="100"
+          v-slot="{ errors }"
+        >
           <label>验证码:</label>
-          <input type="text" placeholder="请输入验证码" />
-          <button>发送验证码</button>
-          <span class="error-msg">错误提示信息</span>
-        </div>
-        <div class="content">
+          <input type="text" placeholder="请输入验证码" v-model="user.code" />
+          <button :disabled="isDisabled" @click="getCode(user.phone)">
+            发送验证码
+          </button>
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="content"
+          name="Password"
+          rules="passwordRequired|password"
+          :debounce="100"
+          v-slot="{ errors }"
+          tag="div"
+        >
           <label>登录密码:</label>
-          <input type="text" placeholder="请输入你的登录密码" />
-          <span class="error-msg">错误提示信息</span>
-        </div>
-        <div class="content">
+          <input
+            type="password"
+            placeholder="请输入你的登录密码"
+            v-model="user.password"
+          />
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="content"
+          tag="div"
+          name="rePassword"
+          :rules="`rePasswordRequired|rePassword:${user.password}`"
+          :debounce="100"
+          v-slot="{ errors }"
+        >
           <label>确认密码:</label>
-          <input type="text" placeholder="请输入确认密码" />
-          <span class="error-msg">错误提示信息</span>
-        </div>
-        <div class="controls">
-          <input name="m1" type="checkbox" />
+          <input
+            type="password"
+            placeholder="请输入确认密码"
+            v-model="user.rePassword"
+          />
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="controls"
+          tag="div"
+          rules="isAgreen"
+          :debounce="100"
+          v-slot="{ errors }"
+        >
+          <input name="m1" type="checkbox" v-model="user.isChecked" />
           <span>同意协议并注册《尚品汇用户协议》</span>
-          <span class="error-msg">错误提示信息</span>
-        </div>
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
         <div class="btn">
-          <button>完成注册</button>
+          <button type="submit">完成注册</button>
         </div>
       </form>
     </ValidationObserver>
@@ -62,9 +110,53 @@
 <script>
 // import { reqRegister } from "../../api/user";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { phoneReg } from "../../utils/regs";
+import { reqCode, reqRegister } from "../../api/user";
+import "./validate";
 
 export default {
   name: "Register",
+  data() {
+    return {
+      user: {
+        phone: "",
+        password: "",
+        rePassword: "",
+        code: "",
+        isChecked: false,
+      },
+    };
+  },
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
+  methods: {
+    async submit() {
+      try {
+        console.log("全部验证通过");
+        const { phone, password, code } = this.user;
+        await reqRegister({ phone, password, code });
+        this.$router.history.push("/login");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // 获取验证码
+    async getCode(phone) {
+      try {
+        const res = await reqCode(phone);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  computed: {
+    isDisabled() {
+      return phoneReg.test(this.user.phone) ? false : true;
+    },
+  },
 };
 </script>
 

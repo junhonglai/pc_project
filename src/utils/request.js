@@ -1,6 +1,7 @@
 import axios from "axios";
 import NProgress from "nprogress";
 import getUuid from "./getUuid";
+import store from "../store";
 import "../../node_modules/nprogress/nprogress.css";
 
 const request = axios.create({
@@ -14,6 +15,13 @@ request.interceptors.request.use(function(config) {
   // 在发送请求之前做些什么
   // 未登录用户的临时id
   config.headers.userTempId = getUuid();
+
+  // 从state中获取token
+  const token = store.state.users.token;
+  if (token) {
+    console.log(store.state.users.token);
+    config.headers.token = token;
+  }
   return config;
 });
 
