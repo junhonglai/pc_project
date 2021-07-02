@@ -22,7 +22,7 @@ const Register = () =>
   import(/* webpackChunkName: 'Register'*/ "../views/Register");
 
 const Detail = () =>
-  import(/* webpackChunkName: 'Detail'*/ "../components/Detail");
+  import(/* webpackChunkName: 'Detail'*/ "../views/Detail");
 
 const AddCartSuccess = () =>
   import(/* webpackChunkName: 'AddCartSuccess'*/ "../views/AddCartSuccess");

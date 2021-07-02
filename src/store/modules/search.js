@@ -30,7 +30,7 @@ const mutations = {
     state.attrsList = res.attrsList;
     state.goodsList = res.goodsList;
     state.total = res.total;
-    console.log(state, res);
+    // console.log(state, res);
   },
 };
 

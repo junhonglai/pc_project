@@ -335,7 +335,7 @@
 </template>
 
 <script>
-import TypeNav from "../TypeNav";
+import TypeNav from "../../components/TypeNav";
 import ImageList from "./ImageList/ImageList";
 import Zoom from "./Zoom/Zoom";
 import InputCom from "./InputCom";

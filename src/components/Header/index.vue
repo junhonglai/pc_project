@@ -30,7 +30,7 @@
         </router-link>
         <form class="header-search" @submit.prevent="searchSubmit">
           <input type="text" class="search-inp" v-model="keyword" />
-          <button class="search-btn">搜索</button>
+          <button type="submit" class="search-btn">搜索</button>
         </form>
       </div>
     </div>
