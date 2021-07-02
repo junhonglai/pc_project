@@ -315,6 +315,12 @@ export default {
     this.search();
     // console.log(this.goodsList);
   },
+  watch: {
+    // 监视$route,因为搜索框内容变化，路径里面的query就会变化，因此路径变化，只要路径变化，就需要重新发送请求
+    $route() {
+      this.search();
+    },
+  },
 };
 </script>
 
