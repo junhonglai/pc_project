@@ -102,13 +102,13 @@
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
-import { reqOrderList } from "../../api/pay";
+import { reqOrderList, reqSubmitOrder } from "../../api/pay";
 
 export default {
   name: "Trade",
@@ -163,6 +163,35 @@ export default {
           return;
         }
         address.isSelect = false;
+      });
+    },
+    async submitOrder() {
+      const {
+        name: consignee,
+        phone: consigneeTel,
+        address: deliveryAddress,
+      } = this.seletUser;
+      const {
+        tradeNo,
+        comment: orderComment,
+        orderList: orderDetailList,
+      } = this;
+      const res = await reqSubmitOrder({
+        tradeNo,
+        consignee,
+        consigneeTel,
+        deliveryAddress,
+        paymentWay:'ONLINE',
+        orderComment,
+        orderDetailList,
+      });
+      console.log(res);
+      this.$router.history.push({
+        name: "Pay",
+        query: {
+          orderId: res,
+          orderPrice: this.totalAmount,
+        },
       });
     },
   },

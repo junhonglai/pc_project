@@ -14,8 +14,8 @@
           </p>
         </div>
         <ul class="header-nav">
-          <li><router-link to="/">我的订单</router-link></li>
-          <li><router-link to="/">我的购物车</router-link></li>
+          <li><router-link to="/center">我的订单</router-link></li>
+          <li><router-link to="/shopcart">我的购物车</router-link></li>
           <li><router-link to="/">我的尚品汇</router-link></li>
           <li><router-link to="/">尚品汇会员</router-link></li>
           <li><router-link to="/">企业采购</router-link></li>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { mapState,mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "Header",
@@ -48,7 +48,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('users',['logout']),
+    ...mapActions("users", ["logout"]),
     searchSubmit() {
       const keyword = this.keyword.trim();
       // 问题：如果输入框内容为空，点击搜索路径错误，应该是http://localhost:8080/search，但是却是http://localhost:8080，这是由于这个时候携带的params参数为空keyword:""，而跳转至search的路由路径为/search/:keyword?，没有与之对应的路径/search/，
@@ -65,12 +65,12 @@ export default {
       this.$router.history.push(options);
     },
     // 退出登录
-    async userLogout(){
-      await this.logout()
-      localStorage.removeItem('user')
-      sessionStorage.removeItem('user')
+    async userLogout() {
+      await this.logout();
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
       console.log(this.nickName);
-    }
+    },
   },
   computed: {
     ...mapState("users", ["nickName"]),

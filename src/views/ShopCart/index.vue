@@ -142,14 +142,14 @@ export default {
     async add(cart) {
       // reqChangeNum();
       // console.log(cart.skuNum);
-      if (cart.skuNum >= 100) return;
-      await reqChangeNum(cart.skuId, 1);
       cart.skuNum += 1;
+      if (cart.skuNum >= 100) return (cart.skuNum = 100);
+      await reqChangeNum(cart.skuId, 1);
     },
     async sub(cart) {
-      if (cart.skuNum <= 1) return;
-      await reqChangeNum(cart.skuId, -1);
       cart.skuNum -= 1;
+      if (cart.skuNum <= 1) return (cart.skuNum = 1);
+      await reqChangeNum(cart.skuId, -1);
     },
     // 删除商品
     async handleRemove(cart) {
