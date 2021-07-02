@@ -101,10 +101,15 @@
           <!-- 商品列表 -->
           <div class="goods-list">
             <ul class="yui3-g">
-              <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id" @click="toDetail(good.id)">
+              <li
+                class="yui3-u-1-5"
+                v-for="good in goodsList"
+                :key="good.id"
+                @click="toDetail(good.id)"
+              >
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a><img :src="good.defaultImg" /></a>
+                    <a><img v-lazy="good.defaultImg" /></a>
                   </div>
                   <div class="price">
                     <strong>
@@ -244,7 +249,7 @@ export default {
         // 默认是降序
         this.options.order = `${orderName}:desc`;
       }
-      this.search()
+      this.search();
     },
     // 删除搜索关键字
     delKeyword() {
@@ -275,7 +280,7 @@ export default {
       this.search();
     },
     // 每页条数改变
-    handleSizeChange(pageNo,pageSize) {
+    handleSizeChange(pageNo, pageSize) {
       // console.log(pageNo);
       this.search({
         pageNo,
@@ -297,14 +302,14 @@ export default {
       this.options.pageSize = pageSize;
     },
     // 点击商品跳转至商品详情
-    toDetail(id){
+    toDetail(id) {
       this.$router.history.push({
-        name:'Detail',
-        params:{
-          id
-        }
-      })
-    }
+        name: "Detail",
+        params: {
+          id,
+        },
+      });
+    },
   },
   mounted() {
     this.search();

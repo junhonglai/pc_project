@@ -41,7 +41,7 @@
           :key="index"
         >
           <li>
-            <img :src="order.imgUrl" :alt="order.skuName" />
+            <img v-lazy="order.imgUrl" :alt="order.skuName" />
           </li>
           <li>
             <p>
@@ -181,7 +181,7 @@ export default {
         consignee,
         consigneeTel,
         deliveryAddress,
-        paymentWay:'ONLINE',
+        paymentWay: "ONLINE",
         orderComment,
         orderDetailList,
       });

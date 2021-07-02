@@ -21,7 +21,7 @@
             />
           </li>
           <li class="cart-list-con2">
-            <img :src="cart.imgUrl" />
+            <img v-lazy="cart.imgUrl" />
             <div class="item-msg">
               {{ cart.skuName }}
             </div>
@@ -143,12 +143,13 @@ export default {
       // reqChangeNum();
       // console.log(cart.skuNum);
       cart.skuNum += 1;
-      if (cart.skuNum >= 100) return (cart.skuNum = 100);
+      // if (cart.skuNum === 100) return;
+      if (cart.skuNum > 100) return (cart.skuNum = 100);
       await reqChangeNum(cart.skuId, 1);
     },
     async sub(cart) {
       cart.skuNum -= 1;
-      if (cart.skuNum <= 1) return (cart.skuNum = 1);
+      if (cart.skuNum < 1) return (cart.skuNum = 1);
       await reqChangeNum(cart.skuId, -1);
     },
     // 删除商品

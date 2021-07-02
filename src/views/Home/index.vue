@@ -45,7 +45,7 @@ export default {
     await reqGetFloors()
       .then((re) => {
         this.floors = re;
-        console.log(this.floors);
+        // console.log(this.floors);
       })
       .catch((e) => {
         console.log(e);

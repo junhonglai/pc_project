@@ -88,7 +88,7 @@
           </div>
           <Dialog title="xxx" width="30%" :visible.sync="visible">
             <div class="pay-img">
-              <img :src="qrcodeUrl" alt="qrcode" />
+              <img v-lazy="qrcodeUrl" alt="qrcode" />
             </div>
             <template #footer>
               <div class="slot-footer">

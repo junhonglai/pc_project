@@ -5,7 +5,7 @@
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
-            <img :src="goods.img" />
+            <img v-lazy="goods.img" />
           </div>
           <div class="right-info">
             <p class="title">
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-
 export default {
   name: "AddCartSuccess",
   data() {

@@ -7,7 +7,7 @@
         :key="index"
         @click="$emit('update:imgIndex', index)"
       >
-        <img :src="img.imgUrl" :class="{ active: index === imgIndex }" />
+        <img v-lazy="img.imgUrl" :class="{ active: index === imgIndex }" />
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -47,7 +47,7 @@ export default {
           // 每次滑动数量
           slidesPerGroup: 1,
         });
-        console.log(this.swiper);
+        // console.log(this.swiper);
       });
     },
   },

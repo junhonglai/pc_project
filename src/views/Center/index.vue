@@ -95,7 +95,7 @@
                   >
                     <td width="60%">
                       <div class="typographic">
-                        <img :src="goods.imgUrl" class="center-img" />
+                        <img v-lazy="goods.imgUrl" class="center-img" />
                         <a href="#" class="block-text">{{ goods.skuName }}</a>
                         <span>x{{ goods.skuNum }}</span>
                         <a href="#" class="service">售后申请</a>
@@ -223,27 +223,27 @@ export default {
     const res = await reqOderList(this.pageNo, this.pageSize);
     this.records = res.records;
     this.total = res.total;
-    console.log(res);
+    // console.log(res);
   },
   methods: {
     async handleSizeChange(pageNo, pageSize) {
       const res = await reqOderList(this.pageNo, this.pageSize);
       this.records = res.records;
       this.total = res.total;
-      this.pageSize = pageSize
-      this.pageNo = pageNo
+      this.pageSize = pageSize;
+      this.pageNo = pageNo;
     },
     async handleCurrentChange(pageNo) {
       const res = await reqOderList(pageNo, this.pageSize);
       this.records = res.records;
       this.total = res.total;
-      this.pageNo = pageNo
+      this.pageNo = pageNo;
     },
     changePage(pageNo) {
-      this.pageNo = pageNo
+      this.pageNo = pageNo;
     },
     changeSize(pageSize) {
-      this.pageSize = pageSize
+      this.pageSize = pageSize;
     },
   },
 };

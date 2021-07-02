@@ -19,7 +19,7 @@ request.interceptors.request.use(function(config) {
   // 从state中获取token
   const token = store.state.users.token;
   if (token) {
-    console.log(store.state.users.token);
+    // console.log(store.state.users.token);
     config.headers.token = token;
   }
   return config;

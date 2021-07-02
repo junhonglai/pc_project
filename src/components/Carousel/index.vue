@@ -8,8 +8,17 @@
       @mouseleave="swiper.autoplay.start()"
     >
       <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="banner in banners" :key="banner.id">
-          <img :src="banner.imgUrl" :alt="banner.id" />
+        <div
+          class="swiper-slide"
+          v-for="(banner, index) in banners"
+          :key="banner.id"
+        >
+          <img
+            v-if="index === 0 || index === banners.length - 1"
+            :src="banner.imgUrl"
+            :alt="banner.id"
+          />
+          <img v-else v-lazy="banner.imgUrl" :alt="banner.id" />
         </div>
       </div>
       <!-- 如果需要分页器 -->
