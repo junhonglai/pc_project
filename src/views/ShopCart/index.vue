@@ -56,13 +56,18 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" />
+        <input
+          class="chooseAll"
+          type="checkbox"
+          v-model="isAllCheck"
+          @click="allCheck"
+        />
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
-        <a href="#none">移到我的关注</a>
-        <a href="#none">清除下柜商品</a>
+        <a href="javascript:;" @click="deleteChecked">删除选中的商品</a>
+        <a href="javascript:;">移到我的关注</a>
+        <a href="javascript:;">清除下柜商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">
@@ -94,6 +99,7 @@ export default {
   data() {
     return {
       cartList: [],
+      isAllCheck: false,
     };
   },
   async mounted() {
@@ -103,6 +109,8 @@ export default {
     } catch (error) {
       console.log(error);
     }
+    // 第一次渲染页面时判断全选框状态
+    this.changeAllChecked();
   },
   computed: {
     // 总数
@@ -125,6 +133,17 @@ export default {
           return p + c.skuNum * c.cartPrice;
         }, 0);
     },
+    // 全选
+    isAllChecked() {
+      //  return this.isAllCheck = this.totalNum === this.cartList.length
+      return (
+        this.cartList.length > 0 &&
+        this.cartList.reduce((p, c) => {
+          return p + c.isChecked;
+        }, 0) === this.cartList.length
+      );
+      // return this.totalNum === this.cartList.length;
+    },
   },
   methods: {
     // 改变选中状态
@@ -137,6 +156,8 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      // 改变单个商品选中状态时，改变全选框选中状态
+      this.changeAllChecked();
     },
     // 改变商品数量
     async add(cart) {
@@ -152,7 +173,7 @@ export default {
       if (cart.skuNum < 1) return (cart.skuNum = 1);
       await reqChangeNum(cart.skuId, -1);
     },
-    // 删除商品
+    // 删除单个商品
     async handleRemove(cart) {
       if (confirm(`确定删除${cart.skuName}这个商品吗？`)) {
         await reqDelete(cart.skuId);
@@ -160,6 +181,33 @@ export default {
           return shopCart.skuId !== cart.skuId;
         });
       }
+    },
+    // 删除已选商品
+    deleteChecked() {
+      if (confirm("确认删除已选中的商品吗？")) {
+        this.cartList.forEach(async (item) => {
+          if (item.isChecked) {
+            // console.log(item);
+            // if (confirm("确认删除已选中的商品吗？")) {
+            await reqDelete(item.skuId);
+            this.cartList = this.cartList.filter((cart) => {
+              return cart.skuId !== item.skuId;
+            });
+            // }
+          }
+        });
+      }
+    },
+    // 全选
+    allCheck() {
+      this.cartList.forEach(async (item) => {
+        item.isChecked = this.isAllCheck === false ? 1 : 0;
+        await reqChangeChecked(item.skuId, this.isAllCheck === false ? 1 : 0);
+      });
+    },
+    changeAllChecked() {
+      // console.log(this.isAllChecked);
+      this.isAllCheck = this.isAllChecked;
     },
   },
 };
